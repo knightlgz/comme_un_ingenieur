@@ -46,8 +46,20 @@ Then Min[i] = Min[i-Vj]+1
 Output Min[S]  
 ```
 
-Here are the solutions found for all sums:
+Here are the solutions found for all sums:  
 
-| Sum | Min. nr. of coins | Coin value added to a smaller sum to
-obtain this sum (it is displayed in brackets) ||----|--------|--------------||0|0|-||1|1|1 (0)||2|2|1 (1)||3|1|3 (0)||4|2|1 (3)||5|1|5 (0)||6|2|3 (3)||7|3|1 (6)||8|2|3 (5)||9|3|1 (8)||10|2|5 (5)||11|3|1 (10)|
+| Sum | Min. nr. of coins | Coin value added to a smaller sum to obtain this sum (it is displayed in brackets) |
+|:-:|:-:|:-:|
+|0|0|-|
+|1|1|1 (0)|
+|2|2|1 (1)|
+|3|1|3 (0)|
+|4|2|1 (3)|
+|5|1|5 (0)|
+|6|2|3 (3)|
+|7|3|1 (6)|
+|8|2|3 (5)|
+|9|3|1 (8)|
+|10|2|5 (5)|
+|11|3|1 (10)|
 

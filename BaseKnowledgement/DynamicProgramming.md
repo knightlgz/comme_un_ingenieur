@@ -4,8 +4,7 @@ An important part of given problems can be solved with the help of dynamic progr
 
 Note: If you’re bored reading one section and you already know what’s being discussed in it – skip it and go to the next one.  
 
-Introduction (Beginner)
----
+#Introduction (Beginner)  
 ***What is a dynamic programming, how can it be described?***  
 
 A **DP** is an algorithmic technique which is usually based on a recurrent formula and one (or some) starting states. A sub-solution of the problem is constructed from previously found ones. DP solutions have a polynomial complexity which assures a much faster running time than other techniques like backtracking, brute-force etc.  
@@ -62,4 +61,119 @@ Here are the solutions found for all sums:
 |9|3|1 (8)|
 |10|2|5 (5)|
 |11|3|1 (10)|
+
+As a result we have found a solution of 3 coins which sum up to 11.  
+
+Additionally, by tracking data about how we got to a certain sum from a previous one, we can find what coins were used in building it. For example: to sum 11 we got by adding the coin with value 1 to a sum of 10. To sum 10 we got from 5. To 5 – from 0. This way we find the coins used: 1, 5 and 5.
+
+Having understood the basic way a **DP** is used, we may now see a slightly different approach to it. It involves the change (update) of best solution yet found for a sum **i**, whenever a better solution for this sum was found. In this case the states aren’t calculated consecutively. Let’s consider the problem above. Start with having a solution of 0 coins for sum 0. Now let’s try to add first coin (with value 1) to all sums already found. If the resulting sum **t** will be composed of fewer coins than the one previously found – we’ll update the solution for it. Then we do the same thing for the second coin, third coin, and so on for the rest of them. For example, we first add coin 1 to sum 0 and get sum 1. Because we haven’t yet found a possible way to make a sum of 1 – this is the best solution yet found, and we mark **S[1]=1**. By adding the same coin to sum 1, we’ll get sum 2, thus making **S[2]=2**. And so on for the first coin. After the first coin is processed, take coin 2 (having a value of 3) and consecutively try to add it to each of the sums already found. Adding it to 0, a sum 3 made up of 1 coin will result. Till now, **S[3]** has been equal to 3, thus the new solution is better than the previously found one. We update it and mark **S[3]=1**. After adding the same coin to sum 1, we’ll get a sum 4 composed of 2 coins. Previously we found a sum of 4 composed of 4 coins; having now found a better solution we update **S[4]** to 2. The same thing is done for next sums – each time a better solution is found, the results are updated.
+
+#Elementary  
+To this point, very simple examples have been discussed. Now let’s see how to find a way for passing from one state to another, for harder problems. For that we will introduce a new term called recurrent relation, which makes a connection between a lower and a greater state.
+
+Let’s see how it works:
+
+Given a sequence of **N** numbers – **A[1]** , **A[2]** , …, **A[N]** . Find the length of the longest non-decreasing sequence.
+
+As described above we must first find how to define a "state" which represents a sub-problem and thus we have to find a solution for it. Note that in most cases the states rely on lower states and are independent from greater states.
+
+Let’s define a state **i** as being the longest non-decreasing sequence which has its last number **A[i]** . This state carries only data about the length of this sequence. Note that for **i < j** the state **i** is independent from **j**, i.e. doesn’t change when we calculate state **j**. Let’s see now how these states are connected to each other. Having found the solutions for all states lower than **i**, we may now look for state **i**. At first we initialize it with a solution of 1, which consists only of the **i-th** number itself. Now for each **j < i** let’s see if it’s possible to pass from it to state **i**. This is possible only when **A[j] ≤ A[i]** , thus keeping (assuring) the sequence non-decreasing. So if **S[j]** (the solution found for state **j**) + 1 (number **A[i]** added to this sequence which ends with number **A[j]** ) is better than a solution found for **i** (ie. **S[j]+1 > S[i]** ), we make **S[i] = S[j]+1**. This way we consecutively find the best solutions for each **i**, until last state **N**.
+
+Let’s see what happens for a randomly generated sequence: 5, 3, 4, 8, 6, 7:
+
+
+|I|The length of the longest non-decreasing sequence of first i numbers|The last sequence i from which we "arrived" to this one|
+|:-:|:-:|:-:|
+|1|1|1 (first number itself)|
+|2|1|2 (second number itself)|
+|3|2|2|
+|4|3|3|
+|5|3|3|
+|6|4|5|
+
+**Practice problem:**  
+Given an undirected graph **G** having **N** (1 < N <= 1000) vertices and positive weights. Find the shortest path from vertex 1 to vertex N, or state that such path doesn’t exist.
+
+Hint: At each step, among the vertices which weren’t yet checked and for which a path from vertex 1 was found, take the one which has the shortest path, from vertex 1 to it, yet found.
+
+#Intermediate  
+Let’s see now how to tackle bi-dimensional DP problems.
+
+**Problem:**  
+A table composed of **N x M** cells, each having a certain quantity of apples, is given. You start from the upper-left corner. At each step you can go down or right one cell. Find the maximum number of apples you can collect.
+
+This problem is solved in the same way as other DP problems; there is almost no difference.
+
+First of all we have to find a state. The first thing that must be observed is that there are at most 2 ways we can come to a cell – from the left (if it’s not situated on the first column) and from the top (if it’s not situated on the most upper row). Thus to find the best solution for that cell, we have to have already found the best solutions for all of the cells from which we can arrive to the current cell.
+
+From above, a recurrent relation can be easily obtained:  
+**S[i][j] = A[i][j] + max(S[i-1][j], if i>0 ; S[i][j-1], if j>0)** (where **i** represents the row and **j** the column of the table , its left-upper corner having coordinates {0,0} ; and **A[i][j]** being the number of apples situated in cell **i**,**j**).
+
+**S[i][j]** must be calculated by going first from left to right in each row and process the rows from top to bottom, or by going first from top to bottom in each column and process the columns from left to right.
+
+Pseudocode:
+
+```
+For i = 0 to N - 1
+   For j = 0 to M - 1
+   S[i][j] = A[i][j] +
+      max(S[i][j-1], if j>0 ; S[i-1][j], if i>0 ; 0)
+
+Output S[n-1][m-1]
+```
+
+#Upper-Intermediate  
+This section will discuss about dealing DP problems which have an additional condition besides the values that must be calculated.
+
+As a good example would serve the following problem:
+
+Given an undirected graph **G** having positive weights and **N** vertices.
+
+You start with having a sum of **M** money. For passing through a vertex **i**, you must pay **S[i]** money. If you don’t have enough money – you can’t pass through that vertex. Find the shortest path from vertex 1 to vertex N, respecting the above conditions; or state that such path doesn’t exist. If there exist more than one path having the same length, then output the cheapest one. Restrictions: 1 < N <= 100 ; 0 <= M <= 100 ; for each **i**, 0 <= **S[i]** <= 100. As we can see, this is the same as the classical Dijkstra problem (finding the shortest path between two vertices), with the exception that it has a condition. In the classical Dijkstra problem we would have used a uni-dimensional array **Min[i]** , which marks the length of the shortest path found to vertex **i**. However in this problem we should also keep information about the money we have. Thus it would be reasonable to extend the array to something like **Min[i][j]** , which represents the length of the shortest path found to vertex **i**, with **j** money being left. In this way the problem is reduced to the original path-finding algorithm. At each step we find the unmarked state **(i,j)** for which the shortest path was found. We mark it as visited (not to use it later), and for each of its neighbors we look if the shortest path to it may be improved. If so – then update it. We repeat this step until there will remain no unmarked state to which a path was found. The solution will be represented by **Min[N-1][j]** having the least value (and the greatest **j** possible among the states having the same value, i.e. the shortest paths to which has the same length).
+
+Pseudocode:
+
+```
+Set states(i,j) as unvisited for all (i,j)
+Set Min[i][j] to Infinity for all (i,j)
+
+Min[0][M]=0
+
+While(TRUE)
+
+Among all unvisited states(i,j) find the one for which Min[i][j]
+is the smallest. Let this state found be (k,l).
+
+If there wasn't found any state (k,l) for which Min[k][l] is
+less than Infinity - exit While loop.
+
+Mark state(k,l) as visited
+
+For All Neighbors p of Vertex k.
+   If (l-S[p]>=0 AND
+    Min[p][l-S[p]]>Min[k][l]+Dist[k][p])
+      Then Min[p][l-S[p]]=Min[k][l]+Dist[k][p]
+   i.e.
+If for state(i,j) there are enough money left for
+going to vertex p (l-S[p] represents the money that
+will remain after passing to vertex p), and the
+shortest path found for state(p,l-S[p]) is bigger
+than [the shortest path found for
+state(k,l)] + [distance from vertex k to vertex p)],
+then set the shortest path for state(i,j) to be equal
+to this sum.
+End For
+
+End While
+
+Find the smallest number among Min[N-1][j] (for all j, 0<=j<=M);
+if there are more than one such states, then take the one with greater
+j. If there are no states(N-1,j) with value less than Infinity - then
+such a path doesn't exist.
+```
+
+#Advanced  
+The following problems will need some good observations in order to reduce them to a dynamic solution.
+
+**Problem StarAdventure – SRM 208 Div 1:**
 
